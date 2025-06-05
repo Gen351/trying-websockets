@@ -14,10 +14,25 @@ app.use(express.static(path.join(__dirname, '../app')));
 
 io.on('connection', (socket) => {
     console.log('A user connected.');
-
+    
+    const senderId = socket.id.substr(0,2);
+    
     socket.on('message', (message) => {
         console.log(message);
-        io.emit('message', `${socket.id.substr(0,2)}: ${message}`);
+        
+        // Send to the sender (marked as own message)
+        socket.emit('message', {
+            text: message,
+            senderId: senderId,
+            isOwnMessage: true
+        });
+        
+        // Send to everyone else (marked as received message)
+        socket.broadcast.emit('message', {
+            text: message,
+            senderId: senderId,
+            isOwnMessage: false
+        });
     });
 });
 
