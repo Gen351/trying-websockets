@@ -1,4 +1,4 @@
-const socket = io('ws://localhost:8080');
+const socket = io('http://localhost:8080');
 
 socket.on('message', text => {
 
@@ -6,11 +6,14 @@ socket.on('message', text => {
     messageElement.innerHTML = text;
 
     document.querySelector('#msg-preview-ul').appendChild(messageElement);
+
 });
 
-document.querySelector('#send-btn').addEventListener('click', () => {
+document.querySelector('.send-btn').addEventListener('click', () => {
 
-    const text = document.querySelector('#msg-input').ariaValueMax;
+    const text = document.querySelector('#msg-input').value;
     socket.emit('message', text);
+    
+    document.querySelector('#msg-input').value = '';
 
 });
